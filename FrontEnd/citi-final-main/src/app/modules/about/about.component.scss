@@ -1,0 +1,137 @@
+body {
+	font-family: 'Roboto', sans-serif;
+	width:100%;
+  margin:0;
+   margin: 0;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+
+.threeholder {
+	position: relative;
+	margin-top: 50px;
+	width: 800px;
+	height:320px;
+	margin-left: auto;
+	margin-right: auto;
+    
+}
+.threeone {
+	display: inline-block;
+	width: 33.33333333333%;
+	height: 100%;
+	background: #11101D;
+	border-bottom: 15px solid blueviolet;
+	text-align: center;
+	transition: all 0.25s;
+    width: 30%;
+    margin: 0 5px;
+
+}
+.threetwo {
+	display: inline-block;
+	width: 33.333333333%;
+	height: 100%;
+	background: #11101D;
+	border-bottom: 15px solid blueviolet;
+	transition: all 0.25s;
+    width: 30%;
+    margin: 0 5px;
+}
+.threethree {
+	display: inline-block;
+	width: 33.333333333%;
+	height: 100%;
+	background: #11101D;
+	border-bottom: 15px solid blueviolet;
+	transition: all 0.25s;
+    width: 30%;
+    margin: 0 5px;
+}
+.threeone:hover {
+	color: blueviolet;
+}
+.threeone:hover .circlepic {
+	background: #11101D;
+}
+.threeone:hover .circleborder{
+		background: white;
+}
+
+.threeone:hover {
+	background: blueviolet;
+	border-bottom: 15px solid white;
+}
+.threeholder h4 {
+	width: 200px;
+	text-align: center;
+	font-size: 12px;
+	margin-left: -55px;
+	font-weight: bold;
+	margin-top: 40px;
+	text-align: center;
+	color: white;
+}
+.threeholder p {
+	display: inline-block;
+	width:200px;
+	text-align: center;
+	margin-left: -55px;
+	margin-top: 0px;
+	font-size: 12px;
+	color:#e7dede;
+	letter-spacing: 1px;
+}
+.threeone:hover h4 {
+	color: black;
+}
+.threetwo:hover h4 {
+	color: black;
+}
+.threethree:hover h4 {
+	color: black;
+}
+.threeone:hover svg, .threetwo:hover svg, .threethree:hover svg {
+	transition: all 0.65s;
+	transform: rotateY(360deg);
+}
+.threetwo:hover {
+	background: blueviolet;
+	border-bottom: 15px solid white;
+}
+.threetwo:hover .circleborder{
+		background: white;
+}
+.threetwo:hover svg{
+	fill:white;
+}
+.threethree:hover {
+	background: blueviolet;
+	border-bottom: 15px solid white;
+}
+.threethree:hover .circleborder{
+		background: white;
+}
+.threethree:hover svg{
+	fill:white;
+}
+.circleborder {
+	position: absolute;
+	top: 30px;
+	width: 90px;
+	height: 90px;
+	background: blueviolet;
+	margin-left: 88.33333px;
+	border-radius: 50%;
+}
+.circlepic {
+	position:absolute;
+	top:-10px;
+	margin-top: 30px;
+	width: 110px;
+	height: 110px;
+	background: black;
+	margin-left: 78.33333px;
+	border-radius: 50%;
+}

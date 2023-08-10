@@ -1,0 +1,14 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class LogCapturer {
+    private List<String> capturedLogs = new ArrayList<>();
+
+    public void captureLog(String logMessage) {
+        capturedLogs.add(logMessage);
+    }
+
+    public List<String> getCapturedLogs() {
+        return new ArrayList<>(capturedLogs);
+    }
+}

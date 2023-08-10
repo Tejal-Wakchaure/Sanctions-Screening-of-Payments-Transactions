@@ -1,0 +1,482 @@
+package com.example.citiproject.service;
+import com.example.citiproject.logappender.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.citiproject.entities.Transaction;
+import com.example.citiproject.repository.TransactionRepository;
+
+import lombok.NoArgsConstructor;
+import java.io.InputStream;
+import java.util.*;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.text.ParseException;
+import java.util.regex.Pattern;
+
+@NoArgsConstructor
+@Service
+public class TransactionServiceImpl implements TransactionService {
+	static String regex = "^[a-zA-Z0-9]+$";
+	static Pattern pattern = Pattern.compile(regex);
+	static Logger logger = LoggerFactory.getLogger(TransactionServiceImpl.class);
+    private static LogCapturer logCapturer = new LogCapturer();
+
+    public TransactionServiceImpl(LogCapturer logCapturer) {
+        this.logCapturer = logCapturer;
+    }
+	@Autowired
+	TransactionRepository transactionRepository;
+	private List<Transaction> list;
+
+	@Override
+	public String sayhi() {
+		return "hiiiii";
+	}
+
+	// file validation
+	public boolean checkFormat(MultipartFile file) {
+		String contentType = file.getContentType();
+		if (contentType.equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	// file validation
+	public boolean isAllColumnPresent(InputStream is) {
+		int rowCount = 0;
+		try {
+			XSSFWorkbook workbook = new XSSFWorkbook(is);
+			XSSFSheet sheet = workbook.getSheetAt(0);
+
+			Row row = sheet.getRow(0);
+			rowCount = row.getLastCellNum();
+			workbook.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		if (rowCount == 7) {
+			return true;
+		}
+		return false;
+	}
+
+	// validate and then add
+	@Override
+	public String addTransaction(InputStream is, String fileName) {
+		list = new ArrayList<>();
+		// List<Transaction> list = new ArrayList<>();
+		List<String> currentRefList = new ArrayList<>();
+		int transactionCount = 0;
+		try (XSSFWorkbook workbook = new XSSFWorkbook(is)) {
+
+			XSSFSheet sheet = workbook.getSheetAt(0);
+			int rowNumber = 0;
+
+			List<String> tranRefList = new ArrayList<>();
+
+			Iterator<Row> iterator = sheet.iterator();
+
+			while (iterator.hasNext()) {
+				Row row = iterator.next();
+				if (rowNumber == 0) {
+					rowNumber++;
+					continue;
+				}
+
+				Iterator<Cell> cells = row.iterator();
+				int cid = 0;
+				boolean isfieldValid = true;
+				int invalideFieldCount = 0;
+				Transaction t = new Transaction();
+				transactionCount++;
+				while (cells.hasNext()) {
+					Cell cell = cells.next();
+					switch (cid) {
+					case 0:
+						tranRefList = transactionRepository.getAllTransactionReference(fileName);
+						String ref = cell.getStringCellValue();
+
+						isfieldValid = isTranRefValid(ref, tranRefList, currentRefList, transactionCount, t);
+						if (isfieldValid) {
+							t.setTransactionReference(ref);
+							currentRefList.add(ref);
+						} else {
+							invalideFieldCount++;
+							if (ref.isEmpty() || ref.isBlank() || ref.equals(null)) {
+								t.setRemark(" Transaction reference missing ");
+								t.setTransactionReference("-");
+							} else {
+								t.setTransactionReference(ref);
+								currentRefList.add(ref);
+							}
+						}
+						break;
+					case 1:
+						String dateString;
+						if (cell.getCellType() == CellType.NUMERIC) {
+							dateString = String.valueOf((int) cell.getNumericCellValue());
+						} else {
+							dateString = cell.getStringCellValue();
+						}
+
+						if (dateString.isBlank() || dateString.isEmpty() || dateString.equals(null)) {
+							invalideFieldCount++;
+							t.setDate("-");
+							if (!(t.getRemark().length() < 1))
+								t.setRemark(t.getRemark() + ",");
+							t.setRemark(t.getRemark() + " Date missing ");
+							logger.error("Date is missing");
+							logCapturer.captureLog("Date is missing");
+						} else {
+							isfieldValid = isValidDateFormat(dateString, t.getTransactionReference(), t);
+							if (isfieldValid) {
+								t.setDate(dateString);
+							} else {
+								invalideFieldCount++;
+								t.setDate(dateString);
+							}
+
+						}
+
+						break;
+					case 2:
+						String name = cell.getStringCellValue();
+
+						isfieldValid = isNameMaxLengthValid(name, "Payer", t.getTransactionReference(), t);
+						if (isfieldValid) {
+
+							t.setPayerName(name);
+						} else {
+							invalideFieldCount++;
+							if (name.isBlank() || name.isEmpty()) {
+								if (!(t.getRemark().length() < 1))
+									t.setRemark(t.getRemark() + ",");
+								t.setRemark(t.getRemark() + " Payer name missing ");
+								t.setPayerName("-");
+							} else {
+								t.setPayerName(name);
+							}
+
+						}
+
+						break;
+					case 3:
+						String acctNum = cell.getStringCellValue();
+
+						isfieldValid = isAcctNumLengthValid(acctNum, "Payer", t.getTransactionReference(), t);
+						if (isfieldValid) {
+
+							t.setPayerAccNumber(acctNum);
+						} else {
+							invalideFieldCount++;
+							if (acctNum.isBlank() || acctNum.isEmpty()) {
+								if (!(t.getRemark().length() < 1))
+									t.setRemark(t.getRemark() + ",");
+								t.setRemark(t.getRemark() + " Payer Account Number missing ");
+								t.setPayerAccNumber("-");
+							} else {
+								t.setPayerAccNumber(acctNum);
+							}
+
+						}
+
+						break;
+					case 4:
+						String name2 = cell.getStringCellValue();
+						isfieldValid = isNameMaxLengthValid(name2, "Payeee", t.getTransactionReference(), t);
+						if (isfieldValid) {
+							t.setPayeeName(name2);
+
+						} else {
+							invalideFieldCount++;
+							if (name2.isBlank() || name2.isEmpty()) {
+								if (!(t.getRemark().length() < 1))
+									t.setRemark(t.getRemark() + ",");
+								t.setRemark(t.getRemark() + " Payeee name missing ");
+								t.setPayeeName("-");
+							} else {
+								t.setPayeeName(name2);
+							}
+						}
+
+						break;
+					case 5:
+						String acctNum2 = cell.getStringCellValue();
+
+						isfieldValid = isAcctNumLengthValid(acctNum2, "Payeee", t.getTransactionReference(), t);
+						if (isfieldValid) {
+							t.setPayeeAccNumber(acctNum2);
+
+							System.out.println(t.getPayeeAccNumber());
+							System.out.println(t.getPayerAccNumber());
+							if (t.getPayeeAccNumber() == t.getPayerAccNumber()) {
+								if (!(t.getRemark().length() < 1))
+									t.setRemark(t.getRemark() + ",");
+								t.setRemark(t.getRemark() + " Invalide Account Number ");
+								invalideFieldCount++;
+							}
+						} else {
+							invalideFieldCount++;
+							if (acctNum2.isBlank() || acctNum2.isEmpty()) {
+								if (!(t.getRemark().length() < 1))
+									t.setRemark(t.getRemark() + ",");
+								t.setRemark(t.getRemark() + " Payee Account Number missing ");
+								t.setPayeeAccNumber("-");
+							} else {
+								t.setPayeeAccNumber(acctNum2);
+							}
+						}
+
+						break;
+					case 6:
+						String amt;
+						if (cell.getCellType() == CellType.NUMERIC) {
+							amt = String.valueOf((int) cell.getNumericCellValue());
+						} else {
+							amt = cell.getStringCellValue();
+						}
+						isfieldValid = isAmountValid(amt, t.getTransactionReference(), t);
+						if (amt.equals(null) || amt.isEmpty() || amt.isBlank()) {
+							isfieldValid = false;
+							if (!(t.getRemark().length() < 1))
+								t.setRemark(t.getRemark() + ",");
+							t.setRemark(t.getRemark() + " Amount missing ");
+							invalideFieldCount++;
+							t.setAmount("-");
+						} else if (isfieldValid) {
+							t.setAmount(amt);
+						} else {
+							invalideFieldCount++;
+							t.setAmount(amt);
+						}
+						break;
+					default:
+						break;
+					}
+					cid++;
+				}
+				t.setFileName(fileName);
+				if (invalideFieldCount > 0) {
+					t.setStatusValidate("Fail");
+					t.setStatusScreen("NA");
+					System.out.println("Transaction is NOT valid" + transactionCount);
+					list.add(t);
+				} else {
+					if (cid != 7) {
+						if (!(t.getRemark().length() < 1))
+							t.setRemark(t.getRemark() + ",");
+						t.setRemark(t.getRemark() + " Missing data ");
+						t.setStatusValidate("Fail");
+						t.setStatusScreen("NA");
+						logger.error("Minimum field count provided,Check the field count! ");
+						logCapturer.captureLog("Minimum field count provided,Check the field count! ");
+						System.out.println(logCapturer.toString());
+						System.out.println("Transaction is NOT valid" + transactionCount);
+					} else {
+						t.setRemark("-");
+						t.setStatusValidate("Pass");
+						System.out.println("Transaction is valid " + transactionCount);
+					}
+					list.add(t);
+				}
+			}
+
+			workbook.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
+		return transactionRepository.addTransaction(list);
+	}
+
+	@Override
+	public String sanctionScreening() {
+		List<String> keyword = new ArrayList<>();
+
+		keyword = transactionRepository.getSanctionedName();
+		keyword.replaceAll(String::toLowerCase);
+//		for (int i = 0; i < keyword.size(); i++) {
+//			System.out.println(keyword.get(i));
+//
+//		}
+		System.out.println(list.isEmpty());
+		if (!list.isEmpty()) {
+			for (int i = 0; i < list.size(); i++) {
+				Transaction t = list.get(i);
+				String validStatus = list.get(i).getStatusValidate();
+				if (validStatus == "Pass") {
+					String payer = t.getPayerName().toLowerCase();
+					String payee = t.getPayeeName().toLowerCase();
+
+					if (keyword.contains(payer)) {
+						System.out.println(payer);
+						t.setStatusScreen("Fail");
+//						if (!(t.getRemark().isBlank() || t.getRemark().isEmpty()))
+//							t.setRemark(", ");
+						t.setRemark( " Sanction on " + payer + " ");
+					} else if (keyword.contains(payee)) {
+						System.out.println(payee);
+						t.setStatusScreen("Fail");
+						t.setRemark( " Sanction on " + payee + " ");
+					} else {
+						t.setStatusScreen("Pass");
+						t.setRemark("Screen successful");
+					}
+				}
+			}
+		}
+		return transactionRepository.sanctionScreening(list);
+	}
+
+	@Override
+	public List<Transaction> getAllTransactions(String fileName) {
+		return transactionRepository.getAllTransactions(fileName);
+	}
+	
+	@Override
+	public List<Transaction> getDatabase() {
+		return transactionRepository.getDatabase();
+	}
+
+	public List<Transaction> listToArchive() {
+		return list;
+	}
+
+	public static boolean isValidDateFormat(String dateString, String transactionReference, Transaction t) {
+		try {
+			LocalDate today = LocalDate.now();
+			String formattedToday = today.format(DateTimeFormatter.ofPattern("ddMMyyyy"));
+
+			SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyy");
+			dateFormat.setLenient(false);
+			dateFormat.parse(dateString);
+			if (!dateString.equals(formattedToday)) {
+				if (!(t.getRemark().length() < 1))
+					t.setRemark(t.getRemark() + ",");
+				t.setRemark(t.getRemark() + " Not current date ");
+				System.out.println("The date does not match today's date.");
+				return false;
+			}
+			return true;
+		} catch (ParseException e) {
+			if (!(t.getRemark().length() < 1))
+				t.setRemark(t.getRemark() + ",");
+			t.setRemark(t.getRemark() + " Invalide date format ");
+			logCapturer.captureLog("Transaction Reference's : " + transactionReference + " Date formate is invalid");
+			logger.error("Transaction Reference's : " + transactionReference + " Date formate is invalid");
+			return false;
+		}
+
+	}
+
+	// field validation
+	public static boolean isAcctNumLengthValid(String cellText, String person, String transactionReference,
+			Transaction t) {
+
+		if (cellText.length() != 12 || !pattern.matcher(cellText).matches()) {
+			logCapturer.captureLog("Transaction Reference's : " + transactionReference + " " + person + " Account Number is invalid");
+			logger.error(
+					"Transaction Reference's : " + transactionReference + " " + person + " Account Number is invalid");
+
+			if (cellText.length() > 0) {
+				if (!(t.getRemark().length() < 1))
+					t.setRemark(t.getRemark() + ",");
+				t.setRemark(t.getRemark() + " Invalide " + person + " Account Number ");
+			}
+			return false;
+		}
+
+		return true;
+	}
+
+//	public static boolean checkPayerPayee() {
+//		
+//	}
+//	
+
+	// transaction reference
+	public static boolean isTranRefValid(String cellText, List<String> tranRefList, List<String> currentRefList,
+			int transactionCount, Transaction t) {
+		if (cellText.length() != 12 || !pattern.matcher(cellText).matches()) {
+			logger.error("Transaction number : " + transactionCount + " (" + (transactionCount + 1)
+					+ "row) has TransactionReference length is invalide or not alphanumeric");
+			logCapturer.captureLog("Transaction number : " + transactionCount + " (" + (transactionCount + 1)
+					+ "row) has TransactionReference length is invalide or not alphanumeric");
+			
+			t.setRemark(t.getRemark() + " Invalid transaction reference length ");
+			return false;
+		}
+
+		if (!(tranRefList == null)) {
+			if (tranRefList.contains(cellText)) {
+				logger.error("Transaction number : " + transactionCount + " (" + (transactionCount + 1)
+						+ "row) has not unique TransactionReference");
+				logCapturer.captureLog("Transaction number : " + transactionCount + " (" + (transactionCount + 1)
+						+ "row) has not unique TransactionReference");
+				if (!(t.getRemark().length() < 1))
+					t.setRemark(t.getRemark() + ",");
+				t.setRemark(t.getRemark() + " Transaction reference not unique ");
+				return false;
+			}
+		}
+		if (currentRefList.contains(cellText)) {
+			logger.error("Transaction number : " + transactionCount + " (" + (transactionCount + 1)
+					+ "row) has not unique TransactionReference");
+			logCapturer.captureLog("Transaction number : " + transactionCount + " (" + (transactionCount + 1)
+					+ "row) has not unique TransactionReference");
+			if (!(t.getRemark().length() < 1))
+				t.setRemark(t.getRemark() + ",");
+			t.setRemark(t.getRemark() + " Transaction reference not unique ");
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean isNameMaxLengthValid(String cellText, String person, String transactionReference,
+			Transaction t) {
+		// if (cellText.length() > 35 || cellText.length() < 1 ||
+		// !pattern.matcher(cellText).matches()) {
+		if (cellText.length() > 35 || !pattern.matcher(cellText).matches()) {
+			logger.error("Transaction Reference's : " + transactionReference + " " + person + " Name is invalid");
+			logCapturer.captureLog("Transaction Reference's : " + transactionReference + " " + person + " Name is invalid");
+			
+			if (cellText.length() > 0) {
+				if (!(t.getRemark().length() < 1))
+					t.setRemark(t.getRemark() + ",");
+				t.setRemark(t.getRemark() + " Invalide " + person + " name ");
+			}
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean isAmountValid(String cellText, String transactionReference, Transaction t) {
+
+		if (!cellText.matches(("^(?!0\\d)(₹\\s?)?\\d{1,10}(\\.\\d{1,2})?$"))) {
+			if (!(t.getRemark().length() < 1))
+				t.setRemark(t.getRemark() + ",");
+			t.setRemark(t.getRemark() + " Invalide Amount format ");
+			logger.error("Invalid amount format: " + cellText);
+			logCapturer.captureLog("Invalid amount format: " + cellText);
+			return false;
+		}
+
+		return true;
+	}
+
+}

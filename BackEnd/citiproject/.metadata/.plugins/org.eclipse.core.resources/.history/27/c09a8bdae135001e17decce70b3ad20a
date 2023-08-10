@@ -1,0 +1,25 @@
+package com.example.citiproject.logappender;
+import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.spi.DeferredProcessingAware;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CustomLogAppender<E extends DeferredProcessingAware> extends AppenderBase<E> {
+    private final List<String> capturedLogs = new ArrayList<>();
+
+    @Override
+    protected void append(E eventObject) {
+        Layout<E> layout = this.getLayout();
+        if (layout != null && eventObject != null) {
+            String logMessage = layout.doLayout(eventObject);
+            capturedLogs.add(logMessage);
+        }
+    }
+
+    public List<String> getCapturedLogs() {
+        return new ArrayList<>(capturedLogs);
+    }
+}

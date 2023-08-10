@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="diaplay-file.component.scss">
+    <style>
+      table {
+        width: 70%;
+        margin-left: 10%;
+        border-collapse: collapse;
+    
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+        text-align: center;
+    white-space: nowrap; 
+      }
+      th {
+        background-color: rgb(206, 200, 200);
+        padding-left: 8px;
+        font-weight: bold;
+      }
+
+     td.Pass {
+    background-color: #0ebe2e;
+  }
+
+  td.Fail {
+    background-color: red;
+  }
+
+  
+  tr:hover{
+    background-color: rgb(206, 200, 200);
+  }
+    </style>
+  </head>
+
+  <body class="b">
+    <div class="main-container">
+    <div class="filter-container">
+      <mat-form-field >
+        <mat-label>Filter Data</mat-label>
+        <mat-select [(ngModel)]="selectedFilter" (selectionChange)="applyFilters()">
+          <mat-option value="">All</mat-option>
+          <mat-option value="ValidPass">Validate Pass</mat-option>
+          <mat-option value="ValidFail">Validate Fail</mat-option>
+          <mat-option value="ScreenPass">Screen Pass</mat-option>
+          <mat-option value="ScreenFail">Screen Fail</mat-option>
+       
+        </mat-select>
+      </mat-form-field>
+
+      <!-- <mat-form-field >
+        <mat-label>Screen Status</mat-label>
+        <mat-select [(ngModel)]="selectedFilter" (selectionChange)="applyFilters()">
+          <mat-option value="">All</mat-option>
+          <mat-option value="Pass">Pass</mat-option>
+          <mat-option value="Fail">Fail</mat-option>
+        </mat-select>
+      </mat-form-field> -->
+
+
+      <mat-form-field>
+        <mat-label>Search</mat-label>
+        <input matInput (keyup)="applySearch($event)" placeholder="Search" />
+      </mat-form-field>
+
+      </div>
+      <div class="buttons-container">
+      <button class="validate-button" (click)="ScreenData()" [disabled]="isdisable"  style="top: 0%; left:0%" >Start screening</button>
+      <button class="validate-button" (click)="archiveData()" >Archive File</button>
+      </div>
+      </div>
+    <br>
+
+    <div class="table-wrapper">
+     <table class="rounded-table" style="background-color: rgba(197, 209, 217, 0.8) ;">
+        <thead>
+        
+            <!-- Use *ngFor to loop through the headers dynamically -->
+          <!-- <th *ngFor="let header of tableHeaders.slice()">{{ header }}</th>  -->
+
+          <tr>
+            <th>Sr. No.</th>
+            <th>Transaction Reference</th>
+            <th>Date</th>
+            <th>Payer Name</th>
+            <th>Payer Account</th>
+            <th>Payee Name</th>
+            <th>Payee Account</th>
+            <th>Amount</th>
+            <th>Validate Status</th>
+            <th>Screen Status</th>
+            <th  style="text-align: left; max-width: 400px;">Remark</th>
+          </tr>
+       
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of filteredData; let i = index" [ngClass]="{ 'Pass': data.statusValidate === 'Pass', 'Fail': data.statusValidate === 'Fail' } ">
+      
+            <!-- <tr *ngFor="let data of transactions "> -->
+              <!-- Use *ngFor to loop through the object keys dynamically -->
+              <td >{{ i+1 }} </td>
+            <td >{{ data.transactionReference }} </td>
+            <td >{{ data.date }} </td>
+            <td >{{ data.payerName }} </td>
+            <td >{{ data.payerAccNumber }} </td>
+            <td >{{ data.payeeName }} </td>
+            <td >{{ data.payeeAccNumber}} </td>
+            <td >{{ data.amount }} </td>
+            
+            <td [ngClass]="{ 'Pass': data.statusValidate === 'Pass', 'Fail': data.statusValidate === 'Fail' }">{{ data.statusValidate }}</td>
+           <!-- <td >{{ data.statusValidate }}</td> -->
+           <td [ngClass]="{ 'Pass': data.statusScreen === 'Pass', 'Fail': data.statusScreen === 'Fail' }">{{ data.statusScreen }}</td>
+           <!-- <td >{{ data.statusScreen }} </td> -->
+           <td class="last-col" style="text-align: left;max-width: 250px;overflow-y: auto;">{{ data.remark }}</td>
+          </tr>
+        </tbody>
+    </table>
+    </div>
+   <br><br><br>
+    
+  </body>
+</html>

@@ -1,0 +1,183 @@
+.sidebar{
+	top: 0;
+	background-color: #11101D;
+}
+
+.background{
+	background-size: cover;
+  background-position: center;
+  height: 100%;
+  display: flex;
+  
+}
+.mat-sidenav {
+	top: 0;
+	font-family: 'Montserrat', sans-serif;
+	height: 100%;
+	max-height: 100%;
+	margin-right: 0;
+	padding-right: 0;
+  }
+  
+  mat-nav-list {
+	font-size: 8px;
+	font-weight: bold;
+	text-align: left;
+	height: auto;
+	max-height: 100%;
+	bottom: 100;
+	margin: 0;
+	padding: 0;
+	
+  }
+  
+  .d{
+	  overflow: hidden;
+	  overflow-x: hidden;
+	  overflow-y: hidden;
+	  background-color: #11101D;
+  }
+  
+  body, html {
+	height: 100%;
+	overflow-x: hidden;
+	margin: 0;
+	padding: 0;
+	background-color:  #060602;
+  }
+  
+  .mat-list-item.list-item-active {
+	background-color: #f0f0f0; /* Set your preferred background color for active link */
+	font-weight: bold; /* Optional: Apply bold font weight for active link */
+  }
+  mat-nav-list mat-list-item {
+	  list-style: none;
+	  margin: 0;
+	  padding: 0;
+	  white-space: nowrap; /* Prevent content from wrapping */
+	  height: 100%;
+	  max-height: 100%;
+	  width: 260px;
+	  top: 0;
+	  left: 0;
+  }  
+  .mat-drawer-inner-container {
+	  overflow: hidden;
+	  background-color: #1a1a1a;
+  }
+  
+  mat-nav-list mat-list-item {
+	  list-style: none;
+	  max-height: 100%;
+  }
+  mat-nav-list mat-list-item a,span {
+	  display: block;
+	  font-family: 'Times New Roman', sans-serif;
+	  text-decoration: none;
+	  text-transform: uppercase;
+	  font-size: 20px;
+	  color: #fff;
+	  position: relative;
+	  padding: 10px 0 10px 18px;
+  }
+
+  mat-nav-list mat-list-item:not(.logo){
+	/* Existing styles... */
+	position: relative; /* Add relative positioning to create a stacking context */
+	margin-bottom: 12%;
+}
+  
+  mat-nav-list mat-list-item:not(.logo):hover {
+	border-radius: 5%;
+	background-color: white; /* Set the background color to white on hover */
+	color: black; /* Set the text color to black on hover */
+	padding: 0 20% 0 1px; /* Adjust the right padding to make the box narrower */
+	width: calc(100% - 5%);
+	line-height: 1;
+	}
+
+  mat-nav-list mat-list-item a:before,span:before {
+	  content: '';
+	  position: absolute;
+	  top: 0px;
+	  right: 0px;
+	  width: 0%;
+	  height: 100%;
+	  background: n;
+	  border-radius: 40px 0px 0px 40px;
+	  z-index: -1;
+	  transition: all 300ms ease-in-out;
+  }
+
+  mat-menu-panel .mat-menu-content {
+	display: flex;
+	justify-content: flex-end; /* Align the dropdown list items to the right */
+  }
+  
+  mat-menu {
+	margin-right: 0; /* Move the dropdown box to the right */
+  }
+
+  mat-nav-list mat-list-item  a:hover, span:hover {
+	  color: black;
+  }
+  mat-nav-list mat-list-item a:hover:before,span:hover:before {
+	  width: 95%;
+  }
+  .custom-nav-list{
+	width: 100%;
+  }
+
+  .wrapper {
+	
+	  margin-left: 260px;
+	  min-height: 100vh;
+	  margin-top: 60px;
+	  background-color: #1a1a1a;
+	  transition: margin-left 0.3s ease-in-out; /* Add a transition for smooth animation */
+	}
+	
+	/* When the sidebar is closed, set margin-left to 0 */
+	.sidebar-closed .wrapper {
+		top: 0;
+	  margin-left: 0;
+	}
+  .section {
+	top: 0;
+	  display: grid;
+	  place-items: center;
+	  background-color: #1a1a1a;
+	  min-height: 100vh;
+	  text-align: center;
+  }
+  .box-area h2 {
+	  text-transform: uppercase;
+	  font-size: 50px;
+  }
+  .box-area p {
+	  line-height: 2;
+  }
+  .box-area {
+	  width: 75%;
+  }
+  .logo img {
+	  width: 100%;
+	  display:block;
+	  margin:0 auto;
+	  width: 150px;
+	  justify-content: center;
+	  align-items: center;  
+  }
+  
+  
+  .footer{
+	justify-content: center; /* Align content horizontally to center */
+	align-items: center; /* Align content vertically to center */
+	height: 40px;
+	width: 100%;
+	position: absolute;
+	color: white;
+	font-size: 9px;
+	bottom: 0;
+	display: flex;
+  }

@@ -1,0 +1,230 @@
+
+
+.flex {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto
+}
+
+@media (max-width:991.98px) {
+    .padding {
+        padding: 1.5rem
+    }
+}
+
+@media (max-width:767.98px) {
+    .padding {
+        padding: 1rem
+    }
+}
+
+.padding {
+    padding: 5rem
+}
+
+.card {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    -ms-box-shadow: none
+}
+
+.pl-3,
+.px-3 {
+    padding-left: 1rem !important
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid #d2d2dc;
+    border-radius: 0
+}
+
+.card .card-title {
+   color: #000000;
+   margin-bottom: 0.625rem;
+   text-transform: capitalize;
+   font-size: 0.875rem;
+   font-weight: 500;
+}
+
+.card .card-description {
+   margin-bottom: .875rem;
+   font-weight: 400;
+   color: #76838f;
+}
+
+p {
+   font-size: 0.875rem;
+   margin-bottom: .5rem;
+   line-height: 1.5rem;
+}
+
+.table-responsive {
+   display: block;
+   width: 100%;
+   overflow-x: auto;
+   -webkit-overflow-scrolling: touch;
+   -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
+.table, .jsgrid .jsgrid-table {
+   width: 100%;
+   max-width: 100%;
+   margin-bottom: 1rem;
+   background-color:  transparent;
+}
+
+.table thead th, .jsgrid .jsgrid-table thead th {
+   border-top: 0;
+   border-bottom-width: 1px;
+   font-weight: 500;
+   font-size: .875rem;
+   text-transform: uppercase;
+}
+
+.table td, .jsgrid .jsgrid-table td {
+   font-size: 0.875rem;
+   padding: .875rem 0.9375rem;
+}
+
+.bagde-warning{
+    border-radius: 0;
+    font-size: 12px;
+    line-height: 1;
+    padding: .375rem .5625rem;
+    font-weight: normal;
+    background-color: aqua;
+}
+
+.filter-button {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .filter-input {
+    margin-bottom: 10px;
+  }
+
+  .main-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    top: 0;
+  }
+  
+  .filter-container {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .buttons-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    top: 0;
+    align-self: center;
+    margin-left: auto; /* Push buttons to the right */
+  }
+  
+ /* .filter-container .form-control {
+    margin-right: 8px;
+  }*/
+  .validate-button:hover{
+    background: #3A0092;
+    color: #fff;
+    box-shadow: 0 3px 0 0  white;
+    }
+  
+    .validate-button{
+      display: block;
+      width: 200px;
+      height: 45px;
+      background: blueviolet;
+      color: #fff;
+      border-radius: 3px;
+      border: 0;
+      box-shadow: 0 3px 0 0 rgb(255, 255, 255);
+      transition: all 0.3s ease-in-out;
+      font-size: 20px;
+      font-weight: 700;
+      font-display: bold;
+      margin-top: 0%;
+      margin-left: 0%;
+      
+      font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+      
+    }
+
+    .disabled-button {
+        opacity: 0.6; /* Example: reduce opacity to indicate disabled */
+        cursor: not-allowed; /* Example: change cursor to indicate not clickable */
+        /* Add any other styles to visually indicate that the button is disabled */
+      }
+
+      .table-wrapper {
+        border: none;
+        overflow: hidden; /* Hide any content that exceeds the rounded corners */
+      }
+      
+      .rounded-table {
+        border: none;
+        margin-left: -0.5%;
+        border-collapse: separate; /* Separate the borders, so we can apply border-radius */
+        border-spacing: 0;
+      }
+      
+      .rounded-table th,
+      .rounded-table td {
+        border: none;
+        padding: 8px;
+        text-align: center;
+      }
+
+      .rounded-table thead tr:first-child th {
+        font-family: Arial, Helvetica, sans-serif;
+        color: #fff;
+        background-color:  rgb(45, 54, 91,0.2) ;
+      }
+
+      .rounded-table tbody tr {
+        font-family: Arial, Helvetica, sans-serif;
+        color: #fff;
+        font-style: bold;
+        background-color: #2D365B ; /* Change the background color as desired */
+      }
+
+      .rounded-table tbody tr:hover {
+        font-family: Arial, Helvetica, sans-serif;
+        font-style: solid bold;
+        color: #fff;
+        background-color: #3A4472; /* Change the hover background color as desired */
+      }
+
+      .last-col  {
+        text-align: left; /* Align content to the left */
+        max-width: 400px;
+  overflow-y: auto;
+}
+.last-col::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.last-col::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 5px;
+}
+
+.last-col::-webkit-scrollbar-track {
+  background-color: #3c4878;
+}

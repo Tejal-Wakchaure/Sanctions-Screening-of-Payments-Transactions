@@ -1,0 +1,106 @@
+html,body{
+    height: min-content;
+    background-color: transparent;
+}
+
+.team-details {
+    justify-content: center;
+    text-align: center;
+    display: inline-block;
+    font-family: 'Times New Roman', sans-serif;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 30px;
+    padding: 0px 40px;
+    top: 10%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border: 2px solid blueviolet;
+    background-color: blueviolet;
+    border-radius: 15px;
+    color:white;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+.container {
+    margin-top: 10%;
+  }
+
+  .our-team {
+    border-radius: 15px;
+    text-align: center;
+    padding: 0% 5% 10%;
+    margin-right: -10%;
+    background: #11101D;
+    border-top: 1px solid blueviolet;
+    border-bottom: 1px solid blueviolet;
+ }
+  
+  .our-team .pic {
+    background: #11101D;
+    padding: 0%;
+    margin-bottom: 25px;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    transition: all 0.5s ease 0s;
+  }
+  
+  .our-team:hover .pic {
+    background: blueviolet;
+    border-radius: 50%;
+  }
+  
+  .pic img {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+  }
+  
+  .our-team .title {
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    display: block;
+    font-size: 90%;
+    margin: 0 0 7px 0;
+  }
+  
+  .our-team .post {
+    color: #17bebb;
+    text-transform: capitalize;
+    display: block;
+    font-size: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .our-team .social {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  
+  .our-team .social li {
+    display: inline-block;
+    margin-right: 5px;
+  }
+  
+  .our-team .social li a {
+    border-radius: 50%;
+    font-size: 15px;
+    color: blueviolet;
+    border: 1px solid blueviolet;
+    display: block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    transition: all 0.5s ease 0s;
+  }
+  
+  .our-team:hover .social li a {
+    background: blueviolet;
+    color: #fff;
+  }
+  

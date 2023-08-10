@@ -1,0 +1,52 @@
+<!--<mat-nav-list class="d">
+ <a mat-list-item routerLinkActive="list-item-active" class="ab" routerLink="/About">About US</a>
+    <a mat-list-item routerLinkActive="list-item-active" class="up" routerLink="/Upload">Upload</a>
+    <a mat-list-item routerLinkActive="list-item-active" class="dash" routerLink="/Dashboard">Dashboard</a>
+  <a  mat-list-item routerLinkActive="list-item-active" class="sanc" routerLink="/Sanction">Sanction</a>
+   
+
+  </mat-nav-list>-->
+  <body >
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <mat-nav-list class="mat-nav-list">
+      <br>
+      <mat-list-item class="logo" >
+        <img src="assets/DevLoopers.png" alt="Logo">
+      </mat-list-item>>
+      <br><br><br><br><br>
+      <mat-list-item><mat-selection-list>
+        <span [matMenuTriggerFor]="fileMenu">
+          <i class="fa fa-file"></i>
+          Transactions
+        </span>
+        </mat-selection-list>
+        <mat-menu #fileMenu="matMenu" >
+          <a href="#" mat-menu-item routerLink="/Upload">
+            <i class="fa fa-upload"></i>
+            File Upload
+          </a>
+          <!-- Add other sub-links related to Upload here -->
+          <a href="#" mat-menu-item routerLink="/Display">
+            <i class="fa fa-folder"></i>
+            File Display
+          </a>
+        </mat-menu>
+      </mat-list-item>
+      <br>
+      <mat-list-item>
+        <a href="#" routerLink="/About">
+          <i class="fa fa-book"></i>
+          About
+        </a>
+      </mat-list-item>
+      <br>
+      <mat-list-item>
+        <a href="#"  routerLink="/Team">
+          <i class="fa fa-users"></i>
+          Team
+        </a>
+      </mat-list-item>
+
+    </mat-nav-list>
+  <footer class="footer">Copyright 2023, @DevLoopers. All rights reserved</footer>
+  </body>

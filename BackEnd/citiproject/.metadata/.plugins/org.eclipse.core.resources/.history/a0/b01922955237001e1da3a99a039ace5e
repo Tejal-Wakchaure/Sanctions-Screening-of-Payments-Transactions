@@ -1,0 +1,59 @@
+import java.io.*;
+import java.util.*;
+import java.text.SimpleDateFormat;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Service;
+import com.example.citiproject.entities.Transaction;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+@Service
+public class ExcelService {
+
+    public String generateExcelFile(List<Transaction> lst) {
+        if (!lst.isEmpty()) {
+            String timeStamp = new SimpleDateFormat("dd-MM-yyyy_HH.mm.ss").format(new Date());
+            String zipFileName = "Archievefile_" + timeStamp + ".zip";
+            String zipFilePath = "C:\\Users\\YUVA\\OneDrive\\Documents\\CitiBridgeProject23\\ArchievedFiles\\" + zipFileName;
+
+            try (ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFilePath))) {
+                for (Transaction t : lst) {
+                    String fileName = t.getFileName() + ".xlsx";
+                    String filePath = "C:\\Users\\YUVA\\OneDrive\\Documents\\CitiBridgeProject23\\ArchievedFiles\\" + fileName;
+
+                    try (Workbook workbook = new XSSFWorkbook()) {
+                        Sheet sheet = workbook.createSheet(t.getFileName());
+
+                        // ... (Create header row and add data)
+
+                        try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
+                            workbook.write(outputStream);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        // Add the Excel file to the zip archive
+                        FileInputStream fis = new FileInputStream(filePath);
+                        ZipEntry zipEntry = new ZipEntry(fileName);
+                        zipOutputStream.putNextEntry(zipEntry);
+
+                        byte[] bytes = new byte[1024];
+                        int length;
+                        while ((length = fis.read(bytes)) >= 0) {
+                            zipOutputStream.write(bytes, 0, length);
+                        }
+                        fis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                return "success";
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return "list is empty!";
+    }
+}
